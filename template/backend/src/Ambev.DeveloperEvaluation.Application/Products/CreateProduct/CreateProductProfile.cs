@@ -4,7 +4,7 @@ using Ambev.DeveloperEvaluation.Domain.Entities;
 namespace Ambev.DeveloperEvaluation.Application.Products.CreateProduct
 {   
     /// <summary>
-    /// Profile for mapping between User entity and CreateProductResponse
+    /// Profile for mapping between Product entity and CreateProductResponse
     /// </summary>
     public class CreateProductProfile: Profile
     {

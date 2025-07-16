@@ -17,7 +17,7 @@ namespace Ambev.DeveloperEvaluation.Application.Products.CreateProduct
         /// <summary>
         /// Gets or sets the unique identifier of the newly created Product.
         /// </summary>
-        /// <value>A GUID that uniquely identifies the created product in the system.</value>
+        /// <value>A GUID that uniquely identifies the created Product in the system.</value>
         public Guid Id { get; }
     }
 }

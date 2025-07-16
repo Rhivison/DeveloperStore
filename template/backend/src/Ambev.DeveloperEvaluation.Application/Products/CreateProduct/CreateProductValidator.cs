@@ -2,7 +2,9 @@ using Ambev.DeveloperEvaluation.Domain.Validation;
 using FluentValidation;
 
 namespace Ambev.DeveloperEvaluation.Application.Products.CreateProduct
-{
+{   /// <summary>
+    /// Validator for CreateProductCommand that defines validation rules for user creation command.
+    /// </summary>
     public class CreateProductValidator: AbstractValidator<CreateProductCommand>
     {
         public CreateProductValidator()

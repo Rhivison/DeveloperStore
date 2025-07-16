@@ -26,8 +26,20 @@ namespace Ambev.DeveloperEvaluation.Application.Products.GetProduct
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Handles the GetProductsCommand request
+        /// </summary>
+        /// <param name="request">The GetUser command</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>All products with pagination</returns>
         public async Task<GetProductsResult> Handle(GetProductCommand request, CancellationToken cancellationToken)
         {
+            var validator = new GetProductsValidator();
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+            if(!validationResult.IsValid)
+                throw new ValidationException(validationResult.Errors);
+
             var allProducts = await _productRepository.GetAllAsync(cancellationToken);
             if (!string.IsNullOrEmpty(request.Order))
             {
