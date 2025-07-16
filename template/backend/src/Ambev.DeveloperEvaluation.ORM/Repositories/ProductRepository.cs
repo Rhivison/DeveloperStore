@@ -66,9 +66,50 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             if (product == null)
             return false;
 
-            _context.Products.Remove(user);
+            _context.Products.Remove(product);
             await _context.SaveChangesAsync(cancellationToken);
             return true;
+        }
+
+        /// <summary>
+        /// Update a product from the database
+        /// </summary>
+        /// <param name="id">The unique identifier of the product to update</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Updated product/returns>
+        public async Task<Product> UpdateAsync(Product product, CancellationToken cancellationToken = default)
+        {
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync(cancellationToken);
+            return product;
+        }
+
+        /// <summary>
+        /// Get all categories from products
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>List of categories String/returns>
+        public async Task<List<string>> GetAllCategoriesAsync(CancellationToken cancellationToken = default)
+        {
+            return await _context.Products
+                .Select(p => p.Category)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToListAsync(cancellationToken);
+        }
+
+        /// <summary>
+        /// Get product from category
+        /// </summary>
+        /// <param name="category">The unique identifier of the product to update</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>List of product by category/returns>
+        public async Task<List<Product>> GetByCategoryAsync(string category, CancellationToken cancellationToken = default)
+        {
+            return await _context.Products
+                .Where(p => p.Category.ToLower() == category.ToLower())
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
         }
 
 

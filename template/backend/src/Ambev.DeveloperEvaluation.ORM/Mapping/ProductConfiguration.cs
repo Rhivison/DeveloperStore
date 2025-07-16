@@ -45,9 +45,6 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
                     .IsRequired();
             });
 
-            
-            builder.Property(p => p.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
-            builder.Property(p => p.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
         }
     }
 }
