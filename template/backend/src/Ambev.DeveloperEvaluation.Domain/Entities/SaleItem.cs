@@ -2,29 +2,28 @@ using System;
 using Ambev.DeveloperEvaluation.Domain.Common;
 using Ambev.DeveloperEvaluation.Domain.ValueObjects;
 using Ambev.DeveloperEvaluation.Domain.Enums;
-using Ambev.DeveloperEvaluation.Domain.Services;
 
 namespace Ambev.DeveloperEvaluation.Domain.Entities
 {
     public class SaleItem: BaseEntity
     {
         // Product (External Identity)
-        public Product Product { get; private set; }
-        
+        public Product Product { get;  set; } = new();
+
         // Quantity
-        public int Quantity { get; private set; }
+        public int Quantity { get;  set; }
         
         // Unit price
-        public decimal UnitPrice { get; private set; }
+        public decimal UnitPrice { get;  set; }
         
         // Discount
-        public decimal Discount { get; private set; }
+        public decimal Discount { get;  set; }
         
         // Total amount for each item
-        public decimal TotalAmount { get; private set; }
+        public decimal TotalAmount { get;  set; }
         
         // Cancelled/Not Cancelled
-        public bool IsCancelled { get; private set; }
+        public bool IsCancelled { get; set; }
 
         public SaleItem()
         {

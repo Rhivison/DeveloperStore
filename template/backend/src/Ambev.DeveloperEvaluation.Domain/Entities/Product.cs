@@ -2,7 +2,7 @@ using System;
 using Ambev.DeveloperEvaluation.Domain.Common;
 using Ambev.DeveloperEvaluation.Domain.ValueObjects;
 using Ambev.DeveloperEvaluation.Domain.Enums;
-using Ambev.DeveloperEvaluation.Domain.Services;
+
 namespace Ambev.DeveloperEvaluation.Domain.Entities
 {
     public class Product: BaseEntity

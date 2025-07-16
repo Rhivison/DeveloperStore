@@ -8,8 +8,8 @@ namespace Ambev.DeveloperEvaluation.Domain.ValueObjects
     public class Branch
     {
         public Guid BranchId { get; set; }
-        public string BranchName { get; set; }
-        public string BranchCode { get; set; }
+        public string BranchName { get; set; } = string.Empty;
+        public string BranchCode { get; set; } = string.Empty;
 
         public Branch() { }
 

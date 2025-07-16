@@ -8,8 +8,8 @@ namespace Ambev.DeveloperEvaluation.Domain.ValueObjects
     public class Customer
     {
         public Guid CustomerId { get; set; }
-        public string CustomerName { get; set; }
-        public string CustomerDocument { get; set; }
+        public string CustomerName { get; set; } = string.Empty;
+        public string CustomerDocument { get; set; } = string.Empty;
 
         public Customer() { }
 

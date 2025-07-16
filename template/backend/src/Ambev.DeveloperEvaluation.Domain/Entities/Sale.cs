@@ -5,27 +5,27 @@ using Ambev.DeveloperEvaluation.Domain.Common;
 using Ambev.DeveloperEvaluation.Domain.ValueObjects;
 using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.Domain.Enums;
-using Ambev.DeveloperEvaluation.Domain.Services;
+
 
 namespace Ambev.DeveloperEvaluation.Domain.Entities
 {
     public class Sale: BaseEntity
     {
         // Sale number
-        public string SaleNumber { get; private set; }
-        
+        public string SaleNumber { get; set; } = string.Empty;
+
         // Date when the sale was made
-        public DateTime SaleDate { get; private set; }
-        
+        public DateTime SaleDate { get; set; }
+
         // Customer (External Identity)
-        public Customer Customer { get; private set; }
-        
+        public Customer Customer { get; set; } = new();
+
         // Total sale amount
-        public decimal TotalSaleAmount { get; private set; }
-        
+        public decimal TotalSaleAmount { get;  set; }
+
         // Branch where the sale was made (External Identity)
-        public Branch Branch { get; private set; }
-        
+        public Branch Branch { get; set; } = new();
+
         // Products, Quantities, Unit prices, Discounts, Total amount for each item
         private readonly List<SaleItem> _items = new List<SaleItem>();
         public IReadOnlyList<SaleItem> Items => _items.AsReadOnly();
@@ -33,12 +33,10 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         // Cancelled/Not Cancelled
         public bool IsCancelled { get; private set; }
 
-        private readonly List<IDomainEvent> _domainEvents = new List<IDomainEvent>();
-        public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
-
         public Sale()
         {
             Id = Guid.NewGuid();
+            SaleDate = DateTime.Now;
         }
 
         public Sale(string saleNumber, Customer customer, Branch branch) : this()
@@ -62,7 +60,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             if (quantity > 20)
                 throw new ArgumentException("Cannot sell more than 20 identical items");
 
-            var existingItem = _items.FirstOrDefault(i => i.Product.ProductId == product.ProductId && !i.IsCancelled);
+            var existingItem = _items.FirstOrDefault(i => i.Product.Id == product.Id && !i.IsCancelled);
             
             if (existingItem != null)
             {
@@ -79,7 +77,6 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             }
 
             RecalculateTotalSaleAmount();
-            AddDomainEvent(new SaleModifiedEvent(Id, SaleNumber));
         }
 
         public void CancelSale()
@@ -88,7 +85,6 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
                 throw new InvalidOperationException("Sale is already cancelled");
 
             IsCancelled = true;
-            AddDomainEvent(new SaleCancelledEvent(Id, SaleNumber));
         }
 
         public void CancelItem(Guid itemId)
@@ -99,7 +95,6 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 
             item.Cancel();
             RecalculateTotalSaleAmount();
-            AddDomainEvent(new ItemCancelledEvent(Id, itemId, SaleNumber));
         }
         private void RecalculateTotalSaleAmount()
         {

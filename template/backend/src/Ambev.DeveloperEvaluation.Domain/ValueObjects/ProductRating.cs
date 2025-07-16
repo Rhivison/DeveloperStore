@@ -7,6 +7,7 @@ namespace Ambev.DeveloperEvaluation.Domain.ValueObjects
 {
     public class ProductRating
     {
-        
+        public decimal Rate { get; set; }
+        public decimal Count { get; set; }
     }
 }
