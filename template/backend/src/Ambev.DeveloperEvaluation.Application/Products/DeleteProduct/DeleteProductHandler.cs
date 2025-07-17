@@ -7,7 +7,7 @@ namespace Ambev.DeveloperEvaluation.Application.Products.DeleteProduct
     /// <summary>
     /// Handler for processing DeleteProductCommand requests
     /// </summary>
-    public class DeleteProductHandler: IRequestHandler<DeleteProductCommand, DeleteProductResponse>
+    public class DeleteProductHandler: IRequestHandler<DeleteProductCommand, DeleteProductResult>
     {
         private readonly IProductRepository _productRepository;
 
@@ -22,7 +22,7 @@ namespace Ambev.DeveloperEvaluation.Application.Products.DeleteProduct
         /// <param name="request">The DeleteProductCommand command</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>The result of the delete operation</returns>
-        public async Task<DeleteProductResponse> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+        public async Task<DeleteProductResult> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
             var validator = new DeleteProductValidator();
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -34,7 +34,7 @@ namespace Ambev.DeveloperEvaluation.Application.Products.DeleteProduct
             if(!success)
                 throw new KeyNotFoundException($"Product with ID {request.Id} not found");
 
-            return new DeleteProductResponse { Success = true };
+            return new DeleteProductResult { Success = true };
 
         }
     }

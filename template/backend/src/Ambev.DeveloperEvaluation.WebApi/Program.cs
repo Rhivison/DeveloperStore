@@ -53,6 +53,9 @@ public class Program
             builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             var app = builder.Build();
+            app.Urls.Clear();
+            app.Urls.Add("http://0.0.0.0:8080");
+            app.Urls.Add("https://0.0.0.0:8081");
             app.UseMiddleware<ValidationExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
