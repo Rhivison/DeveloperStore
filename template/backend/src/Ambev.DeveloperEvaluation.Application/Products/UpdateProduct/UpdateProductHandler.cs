@@ -31,20 +31,9 @@ namespace Ambev.DeveloperEvaluation.Application.Products.UpdateProduct
             if(existingProduct is null)
                 throw new KeyNotFoundException("Product not found.");
             
-            existingProduct.Title = request.Title;
-            existingProduct.Price = request.Price;
-            existingProduct.Description = request.Description;
-            existingProduct.Category = request.Category;
-            existingProduct.Image = request.Image;
-            existingProduct.Rating = new ProductRating
-            {
-                Rate = request.Rate,
-                Count = request.Count
-            };
-
+             _mapper.Map(request, existingProduct);
             await _productRepository.UpdateAsync(existingProduct, cancellationToken);
-            var resultDto = _mapper.Map<ProductDto>(existingProduct);
-            return new UpdateProductResult { Product = resultDto };
+            return _mapper.Map<UpdateProductResult>(existingProduct);
         }
     }
 }

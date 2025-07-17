@@ -10,7 +10,11 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.UpdateProduct
         public string Description { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
-        public double Rate { get; set; }
+        public ProductRatingRequest Rating { get; set; }
+    }
+    public class ProductRatingRequest
+    {
+        public decimal Rate { get; set; }
         public int Count { get; set; }
     }
 }

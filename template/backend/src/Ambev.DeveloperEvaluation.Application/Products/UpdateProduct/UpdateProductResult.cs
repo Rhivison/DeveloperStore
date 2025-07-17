@@ -7,6 +7,12 @@ namespace Ambev.DeveloperEvaluation.Application.Products.UpdateProduct
     /// </summary>
     public class UpdateProductResult
     {
-        public ProductDto Product { get; set; } = new();
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public decimal Price { get; set; }
+        public string Description { get; set; }
+        public string Category { get; set; }
+        public string Image { get; set; }
+        public ProductRatingDto Rating { get; set; }
     }
 }

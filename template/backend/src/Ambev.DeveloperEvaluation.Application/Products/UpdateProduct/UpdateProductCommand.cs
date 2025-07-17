@@ -1,4 +1,5 @@
 using MediatR;
+using Ambev.DeveloperEvaluation.Application.DTOs;
 
 namespace Ambev.DeveloperEvaluation.Application.Products.UpdateProduct
 {   
@@ -7,13 +8,39 @@ namespace Ambev.DeveloperEvaluation.Application.Products.UpdateProduct
     /// </summary>
     public class UpdateProductCommand: IRequest<UpdateProductResult>
     {
+         /// <summary>
+        /// Product ID
+        /// </summary>
         public Guid Id { get; set; }
-        public string Title { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Product title
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// Product price
+        /// </summary>
         public decimal Price { get; set; }
-        public string Description { get; set; } = string.Empty;
-        public string Category { get; set; } = string.Empty;
-        public string Image { get; set; } = string.Empty;
-        public decimal Rate { get; set; }
-        public int Count { get; set; }
+
+        /// <summary>
+        /// Product description
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Product category
+        /// </summary>
+        public string Category { get; set; }
+
+        /// <summary>
+        /// Product image
+        /// </summary>
+        public string Image { get; set; }
+
+        /// <summary>
+        /// Product rating
+        /// </summary>
+        public ProductRatingDto Rating { get; set; }
     }
 }
