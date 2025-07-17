@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.CreateProduct
 {
@@ -32,14 +29,11 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.CreateProduct
         /// </summary>
         public decimal Price { get; set; }
 
-        /// <summary>
-        /// Gets or sets the Rate of the product  to be created.
-        /// </summary>
+        public ProductRatingRequest Rating { get; set; } = new();
+    }
+    public class ProductRatingRequest
+    {
         public decimal Rate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Count of the product  to be created.
-        /// </summary>
         public int Count { get; set; }
     }
 }

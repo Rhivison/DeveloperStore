@@ -9,7 +9,8 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProductById
         public GetProductByIdProfile()
         {   
             CreateMap<GetProductByIdRequest, GetProductByIdCommand>();
-            CreateMap<ProductDto, GetProductByIdResponse>();
+            CreateMap<GetProductByIdResult, GetProductByIdResponse>();
+            CreateMap<ProductRatingDto, ProductRatingResponse>();
         }
     }
 }

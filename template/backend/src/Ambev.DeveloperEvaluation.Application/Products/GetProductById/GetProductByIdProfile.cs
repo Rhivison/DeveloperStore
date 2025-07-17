@@ -2,6 +2,7 @@ using AutoMapper;
 using Ambev.DeveloperEvaluation.Application.DTOs;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 
+
 namespace Ambev.DeveloperEvaluation.Application.Products.GetProductById
 {   
     /// <summary>
@@ -14,7 +15,12 @@ namespace Ambev.DeveloperEvaluation.Application.Products.GetProductById
         /// </summary>
         public GetProductByIdProfile()
         {
-            CreateMap<Product, ProductDto>();
+            CreateMap<Product, GetProductByIdResult>()
+                .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => new ProductRatingDto
+                {
+                    Rate = src.Rating.Rate,
+                    Count = src.Rating.Count
+                }));
         }
     }
 }

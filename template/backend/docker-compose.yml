@@ -8,18 +8,48 @@ services:
       context: .
       dockerfile: src/Ambev.DeveloperEvaluation.WebApi/Dockerfile
     environment:
+      - ConnectionStrings__DefaultConnection=Host=ambev.developerevaluation.database;Port=5432;Database=developer_evaluation;Username=developer;Password=ev@luAt10n
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080;https://+:8081
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_URLS=http://+:8080
+      - DOTNET_ENVIRONMENT=Development
+      - Logging__LogLevel__Default=Debug
+      - Logging__LogLevel__Microsoft=Information
+      - Logging__LogLevel__System=Information
     ports:
       - "8080:8080"
-      - "8081:8081"
+    # Remover volumes problemáticos temporariamente
     volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+     - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+     - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
     depends_on:
       - ambev.developerevaluation.database
       - ambev.developerevaluation.nosql
       - ambev.developerevaluation.cache
+    command: >
+      sh -c "
+        echo 'Aguardando PostgreSQL...';
+        while ! nc -z ambev.developerevaluation.database 5432; do
+          sleep 1;
+        done;
+        echo 'PostgreSQL está pronto!';
+        
+        echo 'Aguardando MongoDB...';
+        while ! nc -z ambev.developerevaluation.nosql 27017; do
+          sleep 1;
+        done;
+        echo 'MongoDB está pronto!';
+        
+        echo 'Aguardando Redis...';
+        while ! nc -z ambev.developerevaluation.cache 6379; do
+          sleep 1;
+        done;
+        echo 'Redis está pronto!';
+        
+        echo 'Iniciando aplicação...';
+        dotnet Ambev.DeveloperEvaluation.WebApi.dll
+      "
     restart: unless-stopped
 
   ambev.developerevaluation.database:

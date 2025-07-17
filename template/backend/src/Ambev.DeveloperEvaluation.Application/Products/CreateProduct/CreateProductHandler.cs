@@ -47,7 +47,11 @@ namespace Ambev.DeveloperEvaluation.Application.Products.CreateProduct
                 Category = command.Category,
                 Image = command.Image,
                 Price = command.Price,
-                Rating = new ProductRating { Rate = command.Rate, Count = command.Count }
+                Rating = new ProductRating
+                {
+                    Rate = command.Rating.Rate,
+                    Count = command.Rating.Count
+                }
             };
 
             var createdProduct = await _productRepository.CreateAsync(product, cancellationToken);

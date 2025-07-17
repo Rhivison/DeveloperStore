@@ -21,6 +21,7 @@ public class Program
             Log.Information("Starting web application");
 
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+            builder.Configuration.AddEnvironmentVariables();
             builder.AddDefaultLogging();
 
             builder.Services.AddControllers();
@@ -51,15 +52,18 @@ public class Program
             });
 
             builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.CustomSchemaIds(type => type.FullName);
+            });
             var app = builder.Build();
             app.Urls.Clear();
             app.Urls.Add("http://0.0.0.0:8080");
-            app.Urls.Add("https://0.0.0.0:8081");
             app.UseMiddleware<ValidationExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
-            {
+            {   
+                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }

@@ -9,7 +9,7 @@ namespace Ambev.DeveloperEvaluation.Application.Products.GetProductById
     /// <summary>
     /// Handler for processing GetProductByIdCommand requests
     /// </summary>
-    public class GetProductByIdHandler: IRequestHandler<GetProductByIdCommand, ProductDto?>
+    public class GetProductByIdHandler: IRequestHandler<GetProductByIdCommand, GetProductByIdResult?>
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
@@ -32,7 +32,7 @@ namespace Ambev.DeveloperEvaluation.Application.Products.GetProductById
         /// <param name="request">The GetProductByIdCommand command</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>The user details if found</returns>
-        public async Task<ProductDto?> Handle(GetProductByIdCommand request, CancellationToken cancellationToken)
+        public async Task<GetProductByIdResult?> Handle(GetProductByIdCommand request, CancellationToken cancellationToken)
         {
 
             var validator = new GetProductByIdValidator();
@@ -42,7 +42,7 @@ namespace Ambev.DeveloperEvaluation.Application.Products.GetProductById
                 throw new ValidationException(validationResult.Errors);
 
             var product = await _productRepository.GetByIdAsync(request.Id, cancellationToken);
-            return product == null ? null : _mapper.Map<ProductDto>(product);
+            return product == null ? null : _mapper.Map<GetProductByIdResult>(product);
         }
         
     }

@@ -9,13 +9,28 @@ namespace Ambev.DeveloperEvaluation.Application.Products.CreateProduct
     {
         public CreateProductValidator()
         {
-            RuleFor(x => x.Title).NotEmpty().MaximumLength(100);
-            RuleFor(x => x.Description).NotEmpty();
-            RuleFor(x => x.Price).GreaterThan(0);
-            RuleFor(x => x.Category).NotEmpty();
-            RuleFor(x => x.Image).Must(uri => Uri.IsWellFormedUriString(uri, UriKind.Absolute));
-            RuleFor(x => x.Rate).InclusiveBetween(0, 5);
-            RuleFor(x => x.Count).GreaterThanOrEqualTo(0);
+            RuleFor(x => x.Title)
+                .NotEmpty().WithMessage("Title is required");
+
+            RuleFor(x => x.Description)
+                .NotEmpty().WithMessage("Description is required");
+
+            RuleFor(x => x.Category)
+                .NotEmpty().WithMessage("Category is required");
+
+            RuleFor(x => x.Image)
+                .NotEmpty().WithMessage("Image is required");
+
+            RuleFor(x => x.Price)
+                .GreaterThan(0).WithMessage("Price must be greater than zero");
+
+            RuleFor(x => x.Rating).NotNull().WithMessage("Rating is required");
+
+            RuleFor(x => x.Rating.Rate)
+                .InclusiveBetween(0, 5).WithMessage("Rate must be between 0 and 5");
+
+            RuleFor(x => x.Rating.Count)
+                .GreaterThanOrEqualTo(0).WithMessage("Count must be 0 or more");
         }
     }
 }

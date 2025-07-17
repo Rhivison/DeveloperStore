@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Ambev.DeveloperEvaluation.Application.DTOs;
 
 namespace Ambev.DeveloperEvaluation.Application.Products.CreateProduct
 {   
@@ -15,9 +12,33 @@ namespace Ambev.DeveloperEvaluation.Application.Products.CreateProduct
     public class CreateProductResult
     {   
         /// <summary>
-        /// Gets or sets the unique identifier of the newly created Product.
+        /// Gets or sets the Title of the product to be created.
         /// </summary>
-        /// <value>A GUID that uniquely identifies the created Product in the system.</value>
-        public Guid Id { get; }
+        public string Title { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the Description of the product  to be created.
+        /// </summary>
+        public string Description { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the Category of the product  to be created.
+        /// </summary>
+        public string Category { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the Image of the product  to be created.
+        /// </summary>
+        public string Image { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the Price of the product  to be created.
+        /// </summary>
+        public decimal Price { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Rate of the product  to be created.
+        /// </summary>
+        public ProductRatingDto Rating { get; set; } = new();
     }
 }

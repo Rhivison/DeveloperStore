@@ -32,11 +32,11 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.CreateProduct
         /// <summary>
         /// Gets or sets the Rate of the product  to be created.
         /// </summary>
+        public ProductRatingResponse Rating { get; set; } = new();
+    }
+    public class ProductRatingResponse
+    {
         public decimal Rate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Count of the product  to be created.
-        /// </summary>
         public int Count { get; set; }
     }
 }

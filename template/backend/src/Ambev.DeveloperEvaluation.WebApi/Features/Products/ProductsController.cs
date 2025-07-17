@@ -34,14 +34,14 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
             _mediator = mediator;
             _mapper = mapper;
         }
-
+        
         /// <summary>
         /// Creates a new Product
         /// </summary>
         /// <param name="request">The PRoduct creation request</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>The created user details</returns>
-        [HttpPost]
+        /*[HttpPost]
         [ProducesResponseType(typeof(ApiResponseWithData<CreateProductResponse>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request, CancellationToken cancellationToken)
@@ -58,9 +58,36 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
             return Created(string.Empty, new ApiResponseWithData<CreateProductResponse>
             {
                 Success = true,
-                Message = "User created successfully",
+                Message = "Product created successfully",
                 Data = _mapper.Map<CreateProductResponse>(response)
             });
+        }*/
+
+        [HttpPost]
+        [ProducesResponseType(typeof(ApiResponseWithData<CreateProductResponse>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request,CancellationToken cancellationToken)
+        {
+            var validator = new CreateProductRequestValidator();
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+            if (!validationResult.IsValid)
+                return BadRequest(validationResult.Errors);
+
+            var command = _mapper.Map<CreateProductCommand>(request);
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            var response = _mapper.Map<CreateProductResponse>(result);
+
+            return Ok(new ApiResponseWithData<CreateProductResponse>
+            {
+                Success = true,
+                Message = "Product created successfully",
+                Data = response
+            });
+
+
         }
 
         /// <summary>

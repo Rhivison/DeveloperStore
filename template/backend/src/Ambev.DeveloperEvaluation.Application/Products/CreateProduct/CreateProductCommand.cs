@@ -1,5 +1,6 @@
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.Domain.Enums;
+using Ambev.DeveloperEvaluation.Application.DTOs;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Products.CreateProduct
@@ -48,13 +49,7 @@ namespace Ambev.DeveloperEvaluation.Application.Products.CreateProduct
         /// <summary>
         /// Gets or sets the Rate of the product  to be created.
         /// </summary>
-        public decimal Rate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Count of the product  to be created.
-        /// </summary>
-        public int Count { get; set; }
-
+        public ProductRatingDto Rating { get; set; } = new();
     public ValidationResultDetail Validate()
     {
             var validator = new CreateProductValidator();
