@@ -8,12 +8,14 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Products.DeleteProduct;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProductById;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.UpdateProduct;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProductsByCategory;
+using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProductCategories;
 using Ambev.DeveloperEvaluation.Application.Products.CreateProduct;
 using Ambev.DeveloperEvaluation.Application.Products.GetProduct;
 using Ambev.DeveloperEvaluation.Application.Products.GetProductById;
 using Ambev.DeveloperEvaluation.Application.Products.DeleteProduct;
 using Ambev.DeveloperEvaluation.Application.Products.UpdateProduct;
 using Ambev.DeveloperEvaluation.Application.Products.GetProductsByCategory;
+using Ambev.DeveloperEvaluation.Application.Products.GetProductCategories;
 
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
@@ -216,6 +218,25 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
             {
                 Success = true,
                 Message = "Products retrieved successfully",
+                Data = response
+            });
+        }
+
+        /// <summary>
+        /// Retrieves all product categories.
+        /// </summary>
+        [HttpGet("categories")]
+        [ProducesResponseType(typeof(ApiResponseWithData<GetProductCategoriesResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetCategoriesAsync([FromQuery] GetProductCategoriesRequest request)
+        {
+            var command = _mapper.Map<GetProductCategoriesCommand>(request);
+            var result = await _mediator.Send(command);
+            var response = _mapper.Map<GetProductCategoriesResponse>(result);
+
+            return Ok(new ApiResponseWithData<GetProductCategoriesResponse>
+            {
+                Success = true,
+                Message = "Product categories retrieved successfully",
                 Data = response
             });
         }
