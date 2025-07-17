@@ -9,6 +9,7 @@ using Ambev.DeveloperEvaluation.WebApi.Middleware;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Microsoft.OpenApi.Models;
 
 namespace Ambev.DeveloperEvaluation.WebApi;
 
@@ -27,8 +28,19 @@ public class Program
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.EnableAnnotations(); // para usar [SwaggerSchema], etc.
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Ambev Evaluation",
+                    Version = "v1",
+                    Description = "API for Ambev Developer Evaluation"
+                });
+                options.CustomSchemaIds(type => type.FullName);
+            });
+
             builder.AddBasicHealthChecks();
-            builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<DefaultContext>(options =>
                 options.UseNpgsql(
@@ -52,10 +64,6 @@ public class Program
             });
 
             builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.CustomSchemaIds(type => type.FullName);
-            });
             var app = builder.Build();
             app.Urls.Clear();
             app.Urls.Add("http://0.0.0.0:8080");
@@ -65,7 +73,10 @@ public class Program
             {   
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ambev Evaluation");
+                });
             }
 
             app.UseHttpsRedirection();

@@ -7,11 +7,13 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProduct;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.DeleteProduct;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProductById;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.UpdateProduct;
+using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProductsByCategory;
 using Ambev.DeveloperEvaluation.Application.Products.CreateProduct;
 using Ambev.DeveloperEvaluation.Application.Products.GetProduct;
 using Ambev.DeveloperEvaluation.Application.Products.GetProductById;
 using Ambev.DeveloperEvaluation.Application.Products.DeleteProduct;
 using Ambev.DeveloperEvaluation.Application.Products.UpdateProduct;
+using Ambev.DeveloperEvaluation.Application.Products.GetProductsByCategory;
 
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
@@ -184,6 +186,36 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
             {
                 Success = true,
                 Message = "Product updated successfully",
+                Data = response
+            });
+        }
+
+        /// <summary>
+        /// Retrieves products by category with optional pagination and ordering.
+        /// </summary>
+        [HttpGet("category/{category}")]
+        [ProducesResponseType(typeof(ApiResponseWithData<GetProductsByCategoryResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByCategoryAsync([FromRoute] string category, [FromQuery] GetProductsByCategoryRequest request)
+        {
+            
+
+            var validator = new GetProductsByCategoryRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            if (!validationResult.IsValid)
+                return BadRequest(validationResult.Errors);
+
+            var command = _mapper.Map<GetProductsByCategoryCommand>(request);
+            command.Category = category;
+
+            var result = await _mediator.Send(command);
+
+            var response = _mapper.Map<GetProductsByCategoryResponse>(result);
+
+            return Ok(new ApiResponseWithData<GetProductsByCategoryResponse>
+            {
+                Success = true,
+                Message = "Products retrieved successfully",
                 Data = response
             });
         }
