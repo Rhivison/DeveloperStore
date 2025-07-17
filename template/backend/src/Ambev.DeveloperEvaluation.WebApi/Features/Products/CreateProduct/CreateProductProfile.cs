@@ -1,6 +1,7 @@
 using AutoMapper;
 using Ambev.DeveloperEvaluation.Application.Products.CreateProduct;
 using Ambev.DeveloperEvaluation.Application.DTOs;
+using Ambev.DeveloperEvaluation.WebApi.Features.Products.ProductRating;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.CreateProduct
 {   
@@ -14,12 +15,26 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.CreateProduct
         /// </summary>
         public CreateProductProfile()
         {   
-            CreateMap<CreateProductRequest, CreateProductCommand>();
-            CreateMap<ProductRatingRequest, ProductRatingDto>();
-
-            CreateMap<CreateProductResult, CreateProductResponse>();
-            CreateMap<ProductRatingDto, ProductRatingResponse>();
             
+             // 1. Primeiro crie o mapeamento para o RatingDto
+            CreateMap<(decimal Rate, int Count), ProductRatingDto>()
+                .ForMember(dest => dest.Rate, opt => opt.MapFrom(src => src.Rate))
+                .ForMember(dest => dest.Count, opt => opt.MapFrom(src => src.Count));
+
+            // 2. Mapeamento Request -> Command
+            CreateMap<CreateProductRequest, CreateProductCommand>()
+                .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => 
+                    new ProductRatingDto { Rate = src.Rate, Count = src.Count }));
+
+            // 3. Mapeamento RatingDto -> RatingResponse
+            CreateMap<ProductRatingDto, ProductRatingResponse>()
+                .ReverseMap(); // Se precisar do mapeamento inverso
+
+            // 4. Mapeamento Result -> Response
+            CreateMap<CreateProductResult, CreateProductResponse>()
+                .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating));
         }
+            
+        
     }
 }
