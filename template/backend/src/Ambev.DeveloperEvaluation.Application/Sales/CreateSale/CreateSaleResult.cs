@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
@@ -8,12 +9,11 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
     public class CreateSaleResult
     {
         public Guid Id { get; set; }
-        public string SaleNumber { get; set; }
+        public Guid UserId { get; set; }
+        public string SaleNumber { get; set; } = string.Empty;
         public DateTime SaleDate { get; set; }
-        public string Customer { get; set; }
-        public string Branch { get; set; }
-        public bool Cancelled { get; set; }
         public decimal TotalAmount { get; set; }
+        public bool IsCancelled { get; set; }
         public List<SaleItemResult> Items { get; set; } = new();
 
     }

@@ -38,6 +38,30 @@ public class Program
                     Description = "API for Ambev Developer Evaluation"
                 });
                 options.CustomSchemaIds(type => type.FullName);
+                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Insira o token JWT com o prefixo 'Bearer '. Exemplo: \"Bearer eyJhbGciOiJIUzI1...\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
+                });
+                
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference 
+                            { 
+                                Type = ReferenceType.SecurityScheme, 
+                                Id = "Bearer" 
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
             });
 
             builder.AddBasicHealthChecks();

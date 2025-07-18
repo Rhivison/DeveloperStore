@@ -11,12 +11,13 @@ using Ambev.DeveloperEvaluation.Domain.Services;
 namespace Ambev.DeveloperEvaluation.Domain.Entities
 {
     public class Sale: BaseEntity
-    {
-        public string SaleNumber { get; private set; }
-        public DateTime SaleDate { get; private set; }
-        public string Customer { get; private set; }
-        public string Branch { get; private set; }
-        public bool Cancelled { get; private set; }
+    {   
+        public Guid UserId { get; set; }
+        public string SaleNumber { get;  set; }
+        public DateTime SaleDate { get;  set; }
+        public string Customer { get;  set; }
+        public string Branch { get;  set; }
+        public bool Cancelled { get;  set; }
 
         private readonly List<SaleItem> _items = new();
         public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();

@@ -8,16 +8,16 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         {
             RuleFor(x => x.SaleNumber).NotEmpty();
             RuleFor(x => x.SaleDate).NotEmpty();
-            RuleFor(x => x.Customer).NotEmpty();
-            RuleFor(x => x.Branch).NotEmpty();
+            RuleFor(x => x.CustomerId).NotEmpty();
+            RuleFor(x => x.CustomerName).NotEmpty();
+            RuleFor(x => x.BranchId).NotEmpty();
+            RuleFor(x => x.BranchName).NotEmpty();
             RuleFor(x => x.Items).NotEmpty();
 
             RuleForEach(x => x.Items).ChildRules(items =>
             {
                 items.RuleFor(i => i.ProductId).NotEmpty();
-                items.RuleFor(i => i.ProductName).NotEmpty();
-                items.RuleFor(i => i.Quantity).GreaterThan(0);
-                items.RuleFor(i => i.UnitPrice).GreaterThan(0);
+                items.RuleFor(i => i.Quantity).GreaterThan(0).LessThanOrEqualTo(20);
             });
         }
     }

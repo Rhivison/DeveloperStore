@@ -12,6 +12,10 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
 
             builder.HasKey(s => s.Id);
 
+            
+             builder.Property(s => s.UserId)
+                .IsRequired();
+
             builder.Property(s => s.SaleNumber)
                 .IsRequired()
                 .HasMaxLength(50);
@@ -45,7 +49,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
             builder.ToTable("SaleItems");
 
             builder.HasKey(i => i.Id);
-
+            
             builder.Property(i => i.ProductId)
                 .IsRequired();
 
