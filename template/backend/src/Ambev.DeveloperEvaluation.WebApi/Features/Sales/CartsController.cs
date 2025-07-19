@@ -6,10 +6,12 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSales;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSaleById;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateSale;
+using Ambev.DeveloperEvaluation.WebApi.Features.Sales.DeleteSale;
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Application.Sales.GetSales;
 using Ambev.DeveloperEvaluation.Application.Sales.GetSaleById;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
+using Ambev.DeveloperEvaluation.Application.Sales.DeleteSale;
 using Microsoft.AspNetCore.Authorization;
 
 
@@ -198,6 +200,36 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Carts
                 Message = "Cart updated successfully",
                 Data = response
             });
+        }
+
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(typeof(ApiResponseWithData<DeleteSaleResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteSale([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            
+            var saleByIdRequest =  new GetSaleByIdRequest { Id = id };
+            var commandSalebyId= _mapper.Map<GetSaleByIdCommand>(saleByIdRequest);
+            var existinSale = await _mediator.Send(commandSalebyId, cancellationToken);
+
+            var command = new DeleteSaleCommand 
+            {
+                Id = id,
+                xmin = existinSale.xmin
+            };
+
+            var result = await _mediator.Send(command, cancellationToken);
+            var response = _mapper.Map<DeleteSaleResponse>(result);
+
+            return Ok(new ApiResponseWithData<DeleteSaleResponse>
+            {
+                Success = true,
+                Message = "Cart cancelled successfully",
+                Data = response
+            });
+
+            
         }
     }
 }
