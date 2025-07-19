@@ -34,12 +34,24 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
             builder.Property(s => s.Cancelled)
                 .IsRequired();
 
-            // Configura o relacionamento 1:N entre Sale e SaleItem
+            builder.Property(s => s.TotalAmount)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)");
+
             builder.HasMany(s => s.Items)
                 .WithOne()
-                .HasForeignKey("SaleId")  // FK na tabela SaleItems
-                .IsRequired()
+                .HasForeignKey("SaleId")
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Metadata
+                .FindNavigation(nameof(Sale.Items))!
+                .SetPropertyAccessMode(PropertyAccessMode.Field);
+
+            builder.Property(s => s.xmin)
+                .HasColumnName("xmin")
+                .HasColumnType("xid")
+                .IsRowVersion()
+                .IsConcurrencyToken();
         }
     }
     public class SaleItemConfiguration : IEntityTypeConfiguration<SaleItem>
@@ -74,6 +86,16 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
 
             builder.Property(i => i.Cancelled)
                 .IsRequired();
+            
+            builder.Property<Guid>("SaleId");
+
+            builder.Property(s => s.xmin)
+                .HasColumnName("xmin")
+                .HasColumnType("xid")
+                .IsRowVersion()
+                .IsConcurrencyToken();
+
+            
         }
     }
 }

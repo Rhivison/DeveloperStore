@@ -9,7 +9,8 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSaleById
         {
             CreateMap<GetSaleByIdRequest, GetSaleByIdCommand>();
 
-            CreateMap<GetSaleByIdResult, GetSaleByIdResponse>();
+            CreateMap<GetSaleByIdResult, GetSaleByIdResponse>()
+                        .ForMember(dest => dest.xmin, opt => opt.MapFrom(src => src.xmin));
             CreateMap<GetSaleItemDto, SaleItemResponse>();
         }
     }

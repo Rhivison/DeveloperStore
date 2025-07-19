@@ -8,6 +8,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSaleById
         public Guid UserId { get; set; }
         public DateTime Date { get; set; }
         public List<SaleItemResponse> Products { get; set; } = new();
+        public uint xmin { get; set; }
     }
     public class SaleItemResponse
     {

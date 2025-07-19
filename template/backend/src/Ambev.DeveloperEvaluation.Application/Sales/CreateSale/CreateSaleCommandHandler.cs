@@ -45,7 +45,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
                 if (product == null)
                     throw new InvalidOperationException($"Product with ID {item.ProductId} not found");
 
-                sale.AddItem(item.ProductId, product.Title, item.Quantity, item.UnitPrice);
+                sale.AddItem(product.Id, product.Title, item.Quantity, product.Price);
             }
 
             // Persistência

@@ -7,15 +7,17 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 {
     public class SaleItem: BaseEntity
     {
-        public Guid ProductId { get; private set; } 
-        public string ProductName { get; private set; } 
-        public int Quantity { get; private set; }
-        public decimal UnitPrice { get; private set; }
-        public decimal Discount { get; private set; }
-        public decimal TotalAmount { get; private set; }
-        public bool Cancelled { get; private set; }
+        public Guid ProductId { get;  set; } 
+        public string ProductName { get;  set; } 
+        public int Quantity { get;  set; }
+        public decimal UnitPrice { get;  set; }
+        public decimal Discount { get;  set; }
+        public decimal TotalAmount { get;  set; }
+        public bool Cancelled { get;  set; }
+        public uint xmin { get; set; }
+        public Guid SaleId { get; set; }
 
-        protected SaleItem() { }
+        public SaleItem() { }
 
         public SaleItem(Guid productId, string productName, int quantity, decimal unitPrice, decimal discount, decimal totalAmount)
         {

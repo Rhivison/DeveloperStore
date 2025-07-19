@@ -180,6 +180,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
                 return BadRequest(validationResult.Errors);
 
             var command = _mapper.Map<UpdateProductCommand>(request);
+            command.Id = id;
             var result = await _mediator.Send(command, cancellationToken);
 
             var response = _mapper.Map<UpdateProductResponse>(result);
