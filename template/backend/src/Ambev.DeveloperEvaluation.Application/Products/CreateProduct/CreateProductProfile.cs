@@ -1,6 +1,7 @@
 using AutoMapper;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Application.DTOs;
+using Ambev.DeveloperEvaluation.Domain.ValueObjects;
 
 namespace Ambev.DeveloperEvaluation.Application.Products.CreateProduct
 {   
@@ -14,19 +15,10 @@ namespace Ambev.DeveloperEvaluation.Application.Products.CreateProduct
         /// </summary>
         public CreateProductProfile()
         {
-            CreateMap<CreateProductCommand, Product>()
-            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => new Domain.ValueObjects.ProductRating
-            {
-                Rate = src.Rating.Rate,
-                Count = src.Rating.Count
-            }));
-
-            CreateMap<Product, CreateProductResult>()
-                .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => new ProductRatingDto
-                {
-                    Rate = src.Rating.Rate,
-                    Count = src.Rating.Count
-                }));
+            CreateMap<ProductRatingDto, ProductRating>();
+            CreateMap<ProductRating, ProductRatingDto>();
+            CreateMap<CreateProductCommand, Product>();
+            CreateMap<Product, CreateProductResult>();
         }
     }
 }

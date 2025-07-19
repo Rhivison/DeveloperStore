@@ -31,12 +31,10 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.CreateProduct
             RuleFor(x => x.Price)
                 .GreaterThan(0).WithMessage("Price must be greater than zero");
 
-            RuleFor(x => x.Rating).NotNull().WithMessage("Rating is required");
-
-            RuleFor(x => x.Rating.Rate)
+            RuleFor(x => x.Rate)
                 .InclusiveBetween(0, 5).WithMessage("Rate must be between 0 and 5");
 
-            RuleFor(x => x.Rating.Count)
+            RuleFor(x => x.Count)
                 .GreaterThanOrEqualTo(0).WithMessage("Count must be 0 or more");
         }
 

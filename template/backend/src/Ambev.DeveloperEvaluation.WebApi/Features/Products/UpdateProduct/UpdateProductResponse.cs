@@ -1,5 +1,5 @@
-using Ambev.DeveloperEvaluation.Application.DTOs;
 
+using Ambev.DeveloperEvaluation.WebApi.Features.Products.ProductRating;
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.UpdateProduct
 {
     public class UpdateProductResponse
@@ -11,10 +11,5 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.UpdateProduct
         public string Category { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public ProductRatingResponse Rating { get; set; }
-    }
-    public class ProductRatingResponse
-    {
-        public decimal Rate { get; set; }
-        public int Count { get; set; }
     }
 }

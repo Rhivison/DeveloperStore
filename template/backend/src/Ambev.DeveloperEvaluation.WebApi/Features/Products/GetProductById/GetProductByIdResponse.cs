@@ -1,5 +1,5 @@
 
-
+using Ambev.DeveloperEvaluation.WebApi.Features.Products.ProductRating;
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProductById
 {
     public class GetProductByIdResponse
@@ -13,9 +13,4 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProductById
         public ProductRatingResponse Rating { get; set; } = new();
     }
 
-    public class ProductRatingResponse
-    {
-        public decimal Rate { get; set; }
-        public int Count { get; set; }
-    }
 }

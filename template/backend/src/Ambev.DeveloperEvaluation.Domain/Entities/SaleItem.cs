@@ -7,86 +7,36 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 {
     public class SaleItem: BaseEntity
     {
-        // Product (External Identity)
-        public Product Product { get;  set; } = new();
-
-        // Quantity
+        public Guid ProductId { get;  set; } 
+        public string ProductName { get;  set; } 
         public int Quantity { get;  set; }
-        
-        // Unit price
         public decimal UnitPrice { get;  set; }
-        
-        // Discount
         public decimal Discount { get;  set; }
-        
-        // Total amount for each item
         public decimal TotalAmount { get;  set; }
-        
-        // Cancelled/Not Cancelled
-        public bool IsCancelled { get; set; }
+        public bool Cancelled { get;  set; }
+        public uint xmin { get; set; }
+        public Guid SaleId { get; set; }
 
-        public SaleItem()
+        public SaleItem() { }
+
+        public SaleItem(Guid productId, string productName, int quantity, decimal unitPrice, decimal discount, decimal totalAmount)
         {
             Id = Guid.NewGuid();
-        }
-        public SaleItem(Product product, int quantity, decimal unitPrice) : this()
-        {
-            Product = product ?? throw new ArgumentNullException(nameof(product));
+            ProductId = productId;
+            ProductName = productName;
             Quantity = quantity;
             UnitPrice = unitPrice;
-            IsCancelled = false;
-            
-            ApplyDiscount();
-            CalculateTotalAmount();
-        }
-        public void UpdateQuantity(int newQuantity)
-        {
-            if (newQuantity <= 0)
-                throw new ArgumentException("Quantity must be greater than zero");
-
-            if (newQuantity > 20)
-                throw new ArgumentException("Cannot sell more than 20 identical items");
-
-            Quantity = newQuantity;
-            ApplyDiscount();
-            CalculateTotalAmount();
+            Discount = discount;
+            TotalAmount = totalAmount;
+            Cancelled = false;
         }
 
         public void Cancel()
         {
-            IsCancelled = true;
-            TotalAmount = 0;
-        }
+            if (Cancelled)
+                throw new InvalidOperationException("Item already cancelled");
 
-        private void ApplyDiscount()
-        {
-            
-            Discount = CalculateDiscount(Quantity, UnitPrice);
-        }
-        private void CalculateTotalAmount()
-        {
-            if (IsCancelled)
-            {
-                TotalAmount = 0;
-                return;
-            }
-
-            var subtotal = Quantity * UnitPrice;
-            TotalAmount = subtotal - Discount;
-        }
-
-        private decimal CalculateDiscount(int quantity, decimal unitPrice)
-        {
-            if (quantity < 4)
-                return 0; // No discount for less than 4 items
-
-            if (quantity >= 4 && quantity < 10)
-                return (quantity * unitPrice) * 0.10m; // 10% discount
-
-            if (quantity >= 10 && quantity <= 20)
-                return (quantity * unitPrice) * 0.20m; // 20% discount
-
-            throw new ArgumentException("Cannot sell more than 20 identical items");
+            Cancelled = true;
         }
 
     }

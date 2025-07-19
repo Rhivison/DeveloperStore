@@ -1,5 +1,5 @@
 
-
+using Ambev.DeveloperEvaluation.WebApi.Features.Products.ProductRating;
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.CreateProduct
 {
     public class CreateProductResponse
@@ -33,10 +33,5 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.CreateProduct
         /// Gets or sets the Rate of the product  to be created.
         /// </summary>
         public ProductRatingResponse Rating { get; set; } = new();
-    }
-    public class ProductRatingResponse
-    {
-        public decimal Rate { get; set; }
-        public int Count { get; set; }
     }
 }

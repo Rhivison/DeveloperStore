@@ -7,11 +7,15 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProduct;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.DeleteProduct;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProductById;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.UpdateProduct;
+using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProductsByCategory;
+using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProductCategories;
 using Ambev.DeveloperEvaluation.Application.Products.CreateProduct;
 using Ambev.DeveloperEvaluation.Application.Products.GetProduct;
 using Ambev.DeveloperEvaluation.Application.Products.GetProductById;
 using Ambev.DeveloperEvaluation.Application.Products.DeleteProduct;
 using Ambev.DeveloperEvaluation.Application.Products.UpdateProduct;
+using Ambev.DeveloperEvaluation.Application.Products.GetProductsByCategory;
+using Ambev.DeveloperEvaluation.Application.Products.GetProductCategories;
 
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
@@ -35,34 +39,6 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
             _mapper = mapper;
         }
         
-        /// <summary>
-        /// Creates a new Product
-        /// </summary>
-        /// <param name="request">The PRoduct creation request</param>
-        /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>The created user details</returns>
-        /*[HttpPost]
-        [ProducesResponseType(typeof(ApiResponseWithData<CreateProductResponse>), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request, CancellationToken cancellationToken)
-        {
-            var validator = new CreateProductRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
-
-            var command = _mapper.Map<CreateProductCommand>(request);
-            var response = await _mediator.Send(command, cancellationToken);
-
-            return Created(string.Empty, new ApiResponseWithData<CreateProductResponse>
-            {
-                Success = true,
-                Message = "Product created successfully",
-                Data = _mapper.Map<CreateProductResponse>(response)
-            });
-        }*/
-
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponseWithData<CreateProductResponse>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -80,7 +56,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
 
             var response = _mapper.Map<CreateProductResponse>(result);
 
-            return Ok(new ApiResponseWithData<CreateProductResponse>
+            return Created(string.Empty, new ApiResponseWithData<CreateProductResponse>
             {
                 Success = true,
                 Message = "Product created successfully",
@@ -204,6 +180,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
                 return BadRequest(validationResult.Errors);
 
             var command = _mapper.Map<UpdateProductCommand>(request);
+            command.Id = id;
             var result = await _mediator.Send(command, cancellationToken);
 
             var response = _mapper.Map<UpdateProductResponse>(result);
@@ -212,6 +189,55 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
             {
                 Success = true,
                 Message = "Product updated successfully",
+                Data = response
+            });
+        }
+
+        /// <summary>
+        /// Retrieves products by category with optional pagination and ordering.
+        /// </summary>
+        [HttpGet("category/{category}")]
+        [ProducesResponseType(typeof(ApiResponseWithData<GetProductsByCategoryResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByCategoryAsync([FromRoute] string category, [FromQuery] GetProductsByCategoryRequest request)
+        {
+            
+
+            var validator = new GetProductsByCategoryRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            if (!validationResult.IsValid)
+                return BadRequest(validationResult.Errors);
+
+            var command = _mapper.Map<GetProductsByCategoryCommand>(request);
+            command.Category = category;
+
+            var result = await _mediator.Send(command);
+
+            var response = _mapper.Map<GetProductsByCategoryResponse>(result);
+
+            return Ok(new ApiResponseWithData<GetProductsByCategoryResponse>
+            {
+                Success = true,
+                Message = "Products retrieved successfully",
+                Data = response
+            });
+        }
+
+        /// <summary>
+        /// Retrieves all product categories.
+        /// </summary>
+        [HttpGet("categories")]
+        [ProducesResponseType(typeof(ApiResponseWithData<GetProductCategoriesResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetCategoriesAsync([FromQuery] GetProductCategoriesRequest request)
+        {
+            var command = _mapper.Map<GetProductCategoriesCommand>(request);
+            var result = await _mediator.Send(command);
+            var response = _mapper.Map<GetProductCategoriesResponse>(result);
+
+            return Ok(new ApiResponseWithData<GetProductCategoriesResponse>
+            {
+                Success = true,
+                Message = "Product categories retrieved successfully",
                 Data = response
             });
         }

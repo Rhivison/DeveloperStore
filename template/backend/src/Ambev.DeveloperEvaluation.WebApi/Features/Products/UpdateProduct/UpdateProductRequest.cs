@@ -1,5 +1,5 @@
 
-
+using Ambev.DeveloperEvaluation.WebApi.Features.Products.ProductRating;
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.UpdateProduct
 {
     public class UpdateProductRequest
@@ -12,9 +12,5 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.UpdateProduct
         public string Image { get; set; } = string.Empty;
         public ProductRatingRequest Rating { get; set; }
     }
-    public class ProductRatingRequest
-    {
-        public decimal Rate { get; set; }
-        public int Count { get; set; }
-    }
+
 }

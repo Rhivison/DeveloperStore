@@ -12,8 +12,7 @@ namespace Ambev.DeveloperEvaluation.Application.Products.UpdateProduct
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
-        private readonly IValidator<UpdateProductCommand> _validator;
-
+        
         public UpdateProductHandler(IProductRepository productRepository, IMapper mapper)
         {
             _productRepository = productRepository;
