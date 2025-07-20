@@ -1,86 +1,221 @@
 # Developer Evaluation Project
 
-`READ CAREFULLY`
+> Aplicação desenvolvida para avaliação de capacidades de desenvolvimento em .NET utilizando DDD.
+> Desenvolvido em ambiente **Linux Ubuntu 20.04**.
 
-## Instructions
-**The test below will have up to 7 calendar days to be delivered from the date of receipt of this manual.**
+---
 
-- The code must be versioned in a public Github repository and a link must be sent for evaluation once completed
-- Upload this template to your repository and start working from it
-- Read the instructions carefully and make sure all requirements are being addressed
-- The repository must provide instructions on how to configure, execute and test the project
-- Documentation and overall organization will also be taken into consideration
+## Tecnologias Utilizadas
 
-## Use Case
-**You are a developer on the DeveloperStore team. Now we need to implement the API prototypes.**
+- **.NET 8**
+- **Entity Framework Core**
+- **PostgreSQL**
+- **MongoDB**
+- **Redis (como Message Broker e Cache)**
+- **Docker + Docker Compose**
+- **xUnit (Testes Unitários)**
 
-As we work with `DDD`, to reference entities from other domains, we use the `External Identities` pattern with denormalization of entity descriptions.
+---
 
-Therefore, you will write an API (complete CRUD) that handles sales records. The API needs to be able to inform:
+## Padrões e Arquitetura
 
-* Sale number
-* Date when the sale was made
-* Customer
-* Total sale amount
-* Branch where the sale was made
-* Products
-* Quantities
-* Unit prices
-* Discounts
-* Total amount for each item
-* Cancelled/Not Cancelled
+- Domain-Driven Design (DDD)
+- External Identities Pattern
+- Publicação de eventos via Redis (`SaleCreated`, `SaleModified`, `SaleCancelled`, `ItemCancelled`)
+- API adicional implementada além do escopo: **Products API**
 
-It's not mandatory, but it would be a differential to build code for publishing events of:
-* SaleCreated
-* SaleModified
-* SaleCancelled
-* ItemCancelled
+---
 
-If you write the code, **it's not required** to actually publish to any Message Broker. You can log a message in the application log or however you find most convenient.
+## Instruções para Execução
 
-### Business Rules
+### Pré-requisitos
+- Docker e Docker Compose instalados
+- .NET SDK 8 instalado (caso deseje rodar testes diretamente)
 
-* Purchases above 4 identical items have a 10% discount
-* Purchases between 10 and 20 identical items have a 20% discount
-* It's not possible to sell above 20 identical items
-* Purchases below 4 items cannot have a discount
+### Subindo a aplicação
+```bash
+docker-compose up --build
+```
 
-These business rules define quantity-based discounting tiers and limitations:
+### Acessando a API
+- Acesse via Swagger: http://localhost:8080/swagger
 
-1. Discount Tiers:
-   - 4+ items: 10% discount
-   - 10-20 items: 20% discount
+---
 
-2. Restrictions:
-   - Maximum limit: 20 items per product
-   - No discounts allowed for quantities below 4 items
+## Etapas de Teste
 
-## Overview
-This section provides a high-level overview of the project and the various skills and competencies it aims to assess for developer candidates. 
+### 1 - Criar Usuário
 
-See [Overview](/.doc/overview.md)
+**POST** `/api/users`
 
-## Tech Stack
-This section lists the key technologies used in the project, including the backend, testing, frontend, and database components. 
+```json
+{
+  "username": "Usuario Teste",
+  "password": "Teste@2025#",
+  "phone": "31991188878",
+  "email": "usuario@email.com",
+  "status": 1,
+  "role": 3
+}
+```
 
-See [Tech Stack](/.doc/tech-stack.md)
+### 2 - Realizar Autenticação
 
-## Frameworks
-This section outlines the frameworks and libraries that are leveraged in the project to enhance development productivity and maintainability. 
+**POST** `/api/auth/login`
 
-See [Frameworks](/.doc/frameworks.md)
+```json
+{
+  "email": "usuario@email.com",
+  "password": "Teste@2025#"
+}
+```
 
-<!-- 
-## API Structure
-This section includes links to the detailed documentation for the different API resources:
-- [API General](./docs/general-api.md)
-- [Products API](/.doc/products-api.md)
-- [Carts API](/.doc/carts-api.md)
-- [Users API](/.doc/users-api.md)
-- [Auth API](/.doc/auth-api.md)
--->
+> **Importante**: Obter o token retornado e via Swagger colar em **Authorize**, colar em **Value** e clicar em **Authorize**
 
-## Project Structure
-This section describes the overall structure and organization of the project files and directories. 
+### 3 - Criar Produtos para Validar as APIs
 
-See [Project Structure](/.doc/project-structure.md)
+**POST** `/api/products`
+
+**Produto 1:**
+```json
+{
+  "title": "Cerveja Brahma",
+  "description": "Brahma Tradicional",
+  "category": "Cervejas",
+  "image": "https://example.com/images/product1.png",
+  "price": 10,
+  "rate": 5,
+  "count": 100
+}
+```
+
+**Produto 2:**
+```json
+{
+  "title": "Cerveja Brahma Duplo Malte",
+  "description": "Brahma Duplo Malte",
+  "category": "Cervejas",
+  "image": "https://example.com/images/product1.png",
+  "price": 10,
+  "rate": 5,
+  "count": 100
+}
+```
+
+> **Nota**: Anote o ID retornado do primeiro produto (exemplo: `8f8a3b00-51e0-436a-b856-0314ffa31f5a`)
+
+### 4 - Criar uma Venda (Carts) para Validar as APIs
+
+**POST** `/api/carts`
+
+```json
+{
+  "saleNumber": "S2025-0001",
+  "saleDate": "2025-07-19T15:08:00.269Z",
+  "customer": {
+    "id": "e8a1c2b0-9876-4cfd-90ab-123456789abc",
+    "name": "João da Silva"
+  },
+  "branch": {
+    "id": "b7c9a1f2-4321-4bcd-91ef-abcdef123456",
+    "name": "Filial São Paulo"
+  },
+  "items": [
+    {
+      "productId": "8f8a3b00-51e0-436a-b856-0314ffa31f5a",
+      "quantity": 5
+    }
+  ]
+}
+```
+
+---
+
+## Regras de Negócio
+
+### Descontos por Quantidade
+- **4+ itens idênticos**: 10% de desconto
+- **10-20 itens idênticos**: 20% de desconto
+
+### Restrições
+- **Limite máximo**: 20 itens por produto
+- **Sem desconto**: Para quantidades abaixo de 4 itens
+- **Não é possível**: Vender acima de 20 itens idênticos
+
+---
+
+## Funcionalidades da API
+
+### Sistema de Vendas
+-  CRUD completo de vendas
+-  Gestão de itens com quantidades e preços
+-  Aplicação automática de regras de desconto
+-  Controle de status (Ativo/Cancelado)
+-  Registro de cliente e filial
+
+### API de Produtos (Adicional)
+-  CRUD completo de produtos
+-  Categorização de produtos
+-  Controle de estoque
+-  Avaliações e imagens
+
+### Sistema de Autenticação
+-  Registro de usuários
+-  Autenticação JWT
+-  Controle de roles e permissões
+
+---
+
+## Testes Unitários
+
+### Executar testes via .NET CLI
+```bash
+dotnet test
+```
+
+### Executar com cobertura de código (Linux)
+```bash
+chmod +x coverage.sh
+./coverage.sh
+```
+
+Os testes unitários foram desenvolvidos para o módulo **Carts/Sales** e podem ser executados via `dotnet test` no projeto de testes unitários ou rodando o script `coverage.sh` em ambientes Linux.
+
+---
+
+## Eventos de Domínio
+
+O sistema publica os seguintes eventos via Redis:
+
+- **SaleCreated**: Disparado na criação de uma venda
+- **SaleModified**: Disparado na modificação de uma venda  
+- **SaleCancelled**: Disparado no cancelamento de uma venda
+- **ItemCancelled**: Disparado no cancelamento de um item
+
+---
+
+## Estrutura do Projeto
+
+```
+developer-store-api/
+├── src/
+│   ├── DeveloperStore.Api/           # API Controllers
+│   ├── DeveloperStore.Application/   # Use Cases e DTOs
+│   ├── DeveloperStore.Domain/        # Entidades e Regras de Negócio
+│   └── DeveloperStore.Infrastructure/ # Repositórios e Serviços
+├── tests/
+│   └── DeveloperStore.UnitTests/     # Testes Unitários
+├── docker-compose.yml                # Configuração Docker
+├── coverage.sh                       # Script de cobertura (Linux)
+└── README.md
+```
+
+---
+
+## Informações Adicionais
+
+- **Ambiente de Desenvolvimento**: Linux Ubuntu 20.04
+- **API Products**: Desenvolvida além do enunciado original
+- **Message Broker**: Redis configurado para publicação de eventos
+- **Testes**: Cobertura completa dos módulos principais
+- **Documentação**: Swagger/OpenAPI integrado
