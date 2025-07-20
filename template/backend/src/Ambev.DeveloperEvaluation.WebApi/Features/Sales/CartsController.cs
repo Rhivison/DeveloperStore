@@ -59,7 +59,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Carts
             command.UserId = userId;
 
             var result = await _mediator.Send(command, cancellationToken);
-            Console.WriteLine($"CreateSaleResult.UserId: {result.UserId}");
+          
             var response = _mapper.Map<CreateSaleResponse>(result);
 
             return Created(string.Empty, new ApiResponseWithData<CreateSaleResponse>

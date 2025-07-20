@@ -4,6 +4,7 @@ using Ambev.DeveloperEvaluation.Common.Logging;
 using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.IoC;
+using Ambev.DeveloperEvaluation.IoC.ModuleInitializers;
 using Ambev.DeveloperEvaluation.ORM;
 using Ambev.DeveloperEvaluation.WebApi.Middleware;
 using MediatR;
@@ -22,6 +23,7 @@ public class Program
             Log.Information("Starting web application");
 
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+            new RedisModuleInitializer().Initialize(builder);
             builder.Configuration.AddEnvironmentVariables();
             builder.AddDefaultLogging();
 
@@ -30,7 +32,7 @@ public class Program
 
             builder.Services.AddSwaggerGen(options =>
             {
-                options.EnableAnnotations(); // para usar [SwaggerSchema], etc.
+                options.EnableAnnotations();
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Ambev Evaluation",
@@ -94,7 +96,7 @@ public class Program
             app.UseMiddleware<ValidationExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
-            {   
+            {       
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
