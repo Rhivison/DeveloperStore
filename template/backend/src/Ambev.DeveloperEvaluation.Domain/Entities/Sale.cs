@@ -24,7 +24,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
         public decimal TotalAmount { get; set; }
 
-        protected Sale() { }
+        public Sale() { }
 
         public Sale(string saleNumber, DateTime saleDate, string customer, string branch)
         {
