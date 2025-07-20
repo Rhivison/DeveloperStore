@@ -2,19 +2,22 @@ using Ambev.DeveloperEvaluation.Domain.Repositories;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Ambev.DeveloperEvaluation.Domain.Events.Sale;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale
 {
     public class DeleteSaleCommandHandler: IRequestHandler<DeleteSaleCommand, DeleteSaleResult>
     {
         private readonly ISaleRepository _saleRepository;
+        private readonly IEventPublisher _eventPublisher;
 
-        public DeleteSaleCommandHandler(ISaleRepository saleRepository)
+        public DeleteSaleCommandHandler(ISaleRepository saleRepository, IEventPublisher eventPublisher)
         {
             _saleRepository = saleRepository;
+            _eventPublisher = eventPublisher;
         }
 
-        public async Task<DeleteSaleResult> Handle(DeleteSaleCommand request, CancellationToken cancellationToken)
+        public async Task<DeleteSaleResult> Handle(DeleteSaleCommand request, CancellationToken cancellationToken )
         {
             var validator = new DeleteSaleCommandValidator();
             var validation = await validator.ValidateAsync(request, cancellationToken);
@@ -34,7 +37,11 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale
             {
                 item.Cancelled = true;
             }
-
+            await _eventPublisher.PublishAsync("sale-cancelled", new SaleCancelledEvent
+            {
+                SaleId = sale.Id,
+                CancelledDate = DateTime.UtcNow,
+            });
             var updated = await _saleRepository.UpdateAsync(sale, cancellationToken);
             if (updated is null)
                 throw new InvalidOperationException("Failed to cancel sale.");

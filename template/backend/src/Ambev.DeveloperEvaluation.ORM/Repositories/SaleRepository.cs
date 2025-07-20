@@ -99,7 +99,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
                     var updatedItemIds = sale.Items.Select(i => i.Id).ToHashSet();
                     
                     var itemsToCancel = existingSale.Items.Where(i => !updatedItemIds.Contains(i.Id) && !i.Cancelled).ToList();
-                    Console.WriteLine($"=== ITEMS TO CANCEL: {itemsToCancel.Count} ===");
+                   
                     foreach (var itemToCancel in itemsToCancel)
                     {
                         itemToCancel.Cancelled = true;

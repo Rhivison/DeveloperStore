@@ -47,7 +47,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         }
         public void AddItem(Guid productId, string productName, int quantity, decimal unitPrice)
         {
-            Console.WriteLine($"{productId} - {productName} - {quantity} - {unitPrice}");
+           
             if (quantity > 20)
                 throw new InvalidOperationException("Cannot sell more than 20 identical items");
 
@@ -55,7 +55,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             decimal total = (quantity * unitPrice) - discount;
 
             var item = new SaleItem(productId, productName, quantity, unitPrice, discount, total);
-            Console.WriteLine($"{productId} - {productName} - {quantity} - {unitPrice} - {discount} - {total}");
+           
             _items.Add(item);
             RecalculateTotal();
         }
@@ -68,7 +68,11 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             foreach (var item in _items)
             {
                 if (!updatedIds.Contains(item.ProductId))
+                {
                     item.Cancelled = true;
+                    
+                }
+                   
                 else
                     item.Cancelled = false;
             }
@@ -104,12 +108,9 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
                 }
             }
 
-            foreach (var item in _items)
-            {
-                Console.WriteLine($"Item {item.ProductId}, xmin: {item.xmin}");
-            }
+            
 
-            // Recalcula total da venda
+            
             RecalculateTotal();
         }
 

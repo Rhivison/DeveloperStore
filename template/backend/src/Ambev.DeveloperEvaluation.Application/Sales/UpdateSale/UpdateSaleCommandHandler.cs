@@ -3,6 +3,7 @@ using MediatR;
 using FluentValidation;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Events.Sale;
 using Ambev.DeveloperEvaluation.Application.DTOs;
 using Microsoft.EntityFrameworkCore;
 namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
@@ -15,6 +16,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
         private readonly ISaleRepository _saleRepository;
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
+        private readonly IEventPublisher _eventPublisher;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateSaleCommandHandler"/> class.
@@ -22,11 +24,12 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
         /// <param name="saleRepository">Repository to access sales.</param>
         /// <param name="productRepository">Repository to fetch product details.</param>
         /// <param name="mapper">Mapper for converting domain entities to result objects.</param>
-         public UpdateSaleCommandHandler(ISaleRepository saleRepository, IProductRepository productRepository, IMapper mapper)
+         public UpdateSaleCommandHandler(ISaleRepository saleRepository, IProductRepository productRepository, IMapper mapper, IEventPublisher eventPublisher)
          {
             _saleRepository = saleRepository;
             _productRepository = productRepository;
             _mapper = mapper;
+            _eventPublisher = eventPublisher;
          }
 
         /// <summary>
@@ -49,12 +52,11 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
             if (sale is null)
                 throw new KeyNotFoundException("Sale not found.");
 
-            // Verifica se o xmin bate
+            
             if (sale.xmin != request.xmin)
                 throw new DbUpdateConcurrencyException("The sale has been modified by another process.");
-            Console.WriteLine($"{sale.xmin} - {request.xmin}");
+           
             
-            // Atualiza campos da venda
             sale.SaleDate = request.Date;
             sale.UserId = request.UserId;
 
@@ -77,7 +79,34 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
             )).ToList();
 
             sale.UpdateSaleItems(updatedItems);
+
+           
+
+
+
             var updatedSale = await _saleRepository.UpdateAsync(sale, cancellationToken);
+
+             await _eventPublisher.PublishAsync("sale-modified", new SaleModifiedEvent
+            {
+                SaleId = sale.Id,
+                ModifiedDate = DateTime.UtcNow,
+                UserId = sale.UserId,
+                NewTotal = sale.TotalAmount
+            });
+
+            foreach(var item in sale.Items)
+            {
+                if(item.Cancelled)
+                {
+                    await _eventPublisher.PublishAsync("item-cancelled", new ItemCancelledEvent
+                    {
+                        SaleId = sale.Id,
+                        ProductId = item.ProductId,
+                        QuantityCancelled = item.Quantity,
+                        CancelledDate = DateTime.UtcNow,
+                    });
+                }
+            }
             if (updatedSale == null)
                 throw new InvalidOperationException("Failed to update sale.");
             return _mapper.Map<UpdateSaleResult>(updatedSale);

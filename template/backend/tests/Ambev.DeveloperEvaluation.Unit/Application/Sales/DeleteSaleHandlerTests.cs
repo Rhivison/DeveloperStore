@@ -11,12 +11,13 @@ using Ambev.DeveloperEvaluation.ORM.Mapping;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Unit.Application.TestData.Sales;
 using Ambev.DeveloperEvaluation.Domain.Entities;
-
+using Ambev.DeveloperEvaluation.Domain.Repositories;
 namespace Ambev.DeveloperEvaluation.Unit.Application.Sales
 {
     public class DeleteSaleHandlerTests
     {
         private readonly ISaleRepository _saleRepository = Substitute.For<ISaleRepository>();
+        private readonly IEventPublisher _eventPublisher = Substitute.For<IEventPublisher>();
         private readonly IMapper _mapper;
         private readonly DeleteSaleCommandHandler _handler;
 
@@ -24,7 +25,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application.Sales
         {
             var config = new MapperConfiguration(cfg => cfg.AddProfile<DeleteSaleProfile>());
             _mapper = config.CreateMapper();
-            _handler = new DeleteSaleCommandHandler(_saleRepository);
+            _handler = new DeleteSaleCommandHandler(_saleRepository, _eventPublisher);
         }
 
         [Fact(DisplayName = "Should cancel sale and items successfully")]

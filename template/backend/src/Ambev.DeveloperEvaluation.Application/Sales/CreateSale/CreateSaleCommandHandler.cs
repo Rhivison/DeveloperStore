@@ -3,7 +3,7 @@ using MediatR;
 using FluentValidation;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Entities;
-
+using System.Text.Json;
 
 
 
@@ -14,15 +14,18 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         private readonly ISaleRepository _saleRepository;
         private readonly IMapper _mapper;
         private readonly IProductRepository _productRepository;
+        private readonly IEventPublisher _eventPublisher;
+
 
         /// <summary>
         /// Initializes a new instance of CreateSaleCommandHandler
         /// </summary>
-        public CreateSaleCommandHandler(ISaleRepository saleRepository, IProductRepository productRepository,  IMapper mapper)
+        public CreateSaleCommandHandler(ISaleRepository saleRepository, IProductRepository productRepository,  IMapper mapper, IEventPublisher eventPublisher)
         {
             _saleRepository = saleRepository;
             _mapper = mapper;
             _productRepository = productRepository;
+            _eventPublisher = eventPublisher;
 
         }
 
@@ -48,10 +51,25 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
                 sale.AddItem(product.Id, product.Title, item.Quantity, product.Price);
             }
 
-            // Persistência
             await _saleRepository.AddAsync(sale, cancellationToken);
 
-            // Mapear entidade para DTO de resposta
+            var saleCreatedEvent = new SaleCreatedEvent
+            {
+                SaleId = sale.Id,
+                CustomerId = sale.Customer,
+                Date = sale.SaleDate,
+                Total = sale.TotalAmount,
+                Items = sale.Items.Select(i => new SaleItemData
+                {
+                    ProductId = i.ProductId,
+                    Quantity = i.Quantity,
+                    UnitPrice = i.UnitPrice,
+                    Discount = i.Discount
+                }).ToList()
+            };
+
+            await _eventPublisher.PublishAsync("sale-created", saleCreatedEvent);
+           
             var result = _mapper.Map<CreateSaleResult>(sale);
             return result;
         }

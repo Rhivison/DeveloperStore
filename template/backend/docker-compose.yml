@@ -9,6 +9,7 @@ services:
       dockerfile: src/Ambev.DeveloperEvaluation.WebApi/Dockerfile
     environment:
       - ConnectionStrings__DefaultConnection=Host=ambev.developerevaluation.database;Port=5432;Database=developer_evaluation;Username=developer;Password=ev@luAt10n
+      - ConnectionStrings__Redis=ambev.developerevaluation.cache:6379,password=ev@luAt10n,abortConnect=false
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
@@ -19,7 +20,6 @@ services:
       - Logging__LogLevel__System=Information
     ports:
       - "8080:8080"
-    # Remover volumes problemáticos temporariamente
     volumes:
      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
