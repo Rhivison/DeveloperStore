@@ -36,6 +36,8 @@
 ```bash
 docker-compose up --build
 ```
+### Aplicar Migrations na Base de Dados (Rodar comando na pasta raiz da solution)
+dotnet ef database update --project src/Ambev.DeveloperEvaluation.ORM --startup-project src/Ambev.DeveloperEvaluation.WebApi
 
 ### Acessando a API
 - Acesse via Swagger: http://localhost:8080/swagger
