@@ -204,7 +204,7 @@ developer-store-api/
 │   ├── DeveloperStore.Api/           # API Controllers
 │   ├── DeveloperStore.Application/   # Use Cases e DTOs
 │   ├── DeveloperStore.Domain/        # Entidades e Regras de Negócio
-│   └── DeveloperStore.Infrastructure/ # Repositórios e Serviços
+│   └── DeveloperStore.IoC/           # Injeções de Dependência
 ├── tests/
 │   └── DeveloperStore.UnitTests/     # Testes Unitários
 ├── docker-compose.yml                # Configuração Docker
