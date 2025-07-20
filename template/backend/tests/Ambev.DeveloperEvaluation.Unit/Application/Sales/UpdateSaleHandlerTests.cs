@@ -17,6 +17,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application.Sales
     {
         private readonly ISaleRepository _saleRepository = Substitute.For<ISaleRepository>();
         private readonly IProductRepository _productRepository = Substitute.For<IProductRepository>();
+        private readonly IEventPublisher _eventPublisher = Substitute.For<IEventPublisher>();
         private readonly IMapper _mapper;
         private readonly UpdateSaleCommandHandler _handler;
 
@@ -29,7 +30,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application.Sales
             });
             _mapper = config.CreateMapper();
 
-            _handler = new UpdateSaleCommandHandler(_saleRepository, _productRepository, _mapper);
+            _handler = new UpdateSaleCommandHandler(_saleRepository, _productRepository, _mapper, _eventPublisher);
         }
 
         [Fact(DisplayName = "Should update sale successfully when valid command is provided")]
